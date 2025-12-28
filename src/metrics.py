@@ -19,7 +19,10 @@ def annualised_volatility(returns: pd.Series) -> float:
     """
     Annualised volatility from daily returns.
     """
-    return float(returns.std() * np.sqrt(TRADING_DAYS))
+    std = returns.std()
+    if isinstance(std, pd.Series):
+        std = std.iloc[0]
+    return std * np.sqrt(TRADING_DAYS)
 
 def sharpe_ratio(returns: pd.Series, risk_free_rate: float = 0.0) -> float:
     """
@@ -27,4 +30,26 @@ def sharpe_ratio(returns: pd.Series, risk_free_rate: float = 0.0) -> float:
     Risk-free rate is annualised.
     """
     excess_returns = returns - (risk_free_rate / TRADING_DAYS)
-    return float((excess_returns.mean() / excess_returns.std()) * np.sqrt(TRADING_DAYS))
+
+    mean = excess_returns.mean()
+    std = excess_returns.std()
+
+    if isinstance(mean, pd.Series):
+        mean = mean.iloc[0]
+    if isinstance(std, pd.Series):
+        std = std.iloc[0]  
+    return (mean / std) * np.sqrt(TRADING_DAYS)
+
+def max_drawdown(returns: pd.Series) -> float: 
+    """
+    Maximum drawdown from daily returns.
+    Returned as a negative number (e.g. -0.2 for a 20% drawdown).
+    """
+    cumulative = (1 + returns).cumprod()
+    running_max = cumulative.cummax()
+    drawdown = cumulative / running_max - 1
+    
+    mdd = drawdown.min()
+    if isinstance(mdd, pd.Series):
+        mdd = mdd.iloc[0]
+    return mdd 

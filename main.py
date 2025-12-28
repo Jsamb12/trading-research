@@ -1,7 +1,9 @@
 import json 
 from pathlib import Path 
 from src.prices import fetch_prices 
-from src.metrics import daily_returns, annualised_volatility, sharpe_ratio
+from src.metrics import daily_returns, annualised_volatility, sharpe_ratio, max_drawdown
+from src.report import build_report
+from pathlib import Path
 
 def load_config(): 
     return json.loads(Path("config.json").read_text())
@@ -19,10 +21,21 @@ def main():
 
     vol = annualised_volatility(returns)
     sr = sharpe_ratio(returns)
+    mdd = max_drawdown(returns)
 
-    print(f"Annualised Volatility for {cfg['ticker']}: {vol:.2%}")
-    print(f"Annualised Sharpe Ratio for {cfg['ticker']}: {sr:.2f}")
-    # print(type(sr))
+    report = build_report(
+        ticker=cfg["ticker"],
+        start_date=cfg["start_date"],
+        volatility=vol, 
+        sharpe=sr,  
+        max_drawdown=mdd,
+    )
+    
+    output_path = Path(cfg.get("output_path", "output/report.md"))
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(report, encoding="utf-8")
+
+    print(f"Report saved to {output_path.resolve()}")
 
 if __name__ == "__main__":
     main()
