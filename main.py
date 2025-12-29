@@ -76,11 +76,5 @@ def main():
 
     print(f"Report saved to {output_path.resolve()}")
 
-    # TEMP sanity checks
-    tmp = sma_strategy(close)
-    print("\n Strategy returns head:")
-    print(tmp.head(10))
-    print("Any positive/negative returns?", (tmp != 0).any())
-
 if __name__ == "__main__":
     main()

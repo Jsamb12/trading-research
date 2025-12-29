@@ -4,6 +4,7 @@ def sma_strategy(
         prices: pd.Series, 
         short_window: int = 20, 
         long_window: int = 50, 
+        transaction_cost: float = 0.001 # 0.1% per trade
 ) -> pd.Series: 
     """
     Simple moving average crossover strategy. 
@@ -18,5 +19,11 @@ def sma_strategy(
 
     asset_returns = prices.pct_change().fillna(0)
     strategy_returns = position * asset_returns
+
+    #  Detect trades (position changes)
+    trades = position.diff().abs().fillna(0)
+
+    # Subtract transaction costs on trading days
+    strategy_returns -= trades * transaction_cost
 
     return strategy_returns
