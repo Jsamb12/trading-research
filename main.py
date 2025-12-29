@@ -4,6 +4,7 @@ from src.prices import fetch_prices
 from src.metrics import daily_returns, annualised_volatility, sharpe_ratio, max_drawdown
 from src.report import build_report
 from src.strategy import sma_strategy
+from src.plotting import plot_cum_returns
 from pathlib import Path
 
 def load_config(): 
@@ -75,6 +76,10 @@ def main():
     output_path.write_text(report, encoding="utf-8")
 
     print(f"Report saved to {output_path.resolve()}")
+
+    plot_cum_returns(bh_returns, strat_returns, out_path="assets/cumulative_returns.png")
+
+    print("Wrote assets/cumulative_returns.png")
 
 if __name__ == "__main__":
     main()

@@ -24,6 +24,8 @@ def build_report(
         f"- This is a historical backtest for learning and comparison.\n"
         f"- The SMA strategy is long-only and switches between 0% and 100% exposure.\n"
         f"- Signals are shifted by 1 day to avoid look-ahead bias.\n"
+        f"\n## Cumulative Returns\n\n"
+        f"![Cumulative Returns](../assets/cumulative_returns.png)\n"
     )
 
     return report
