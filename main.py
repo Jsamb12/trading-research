@@ -49,12 +49,25 @@ def main():
     sr = sharpe_ratio(returns)
     mdd = max_drawdown(returns)
 
+    bh = {
+        "vol": annualised_volatility(bh_returns),
+        "sharpe": sharpe_ratio(bh_returns),
+        "mdd": max_drawdown(bh_returns),
+    }
+
+    sma = {
+        "vol": annualised_volatility(strat_returns),
+        "sharpe": sharpe_ratio(strat_returns),
+        "mdd": max_drawdown(strat_returns),
+    }
+
     report = build_report(
         ticker=cfg["ticker"],
         start_date=cfg["start_date"],
-        volatility=vol, 
-        sharpe=sr,  
-        max_drawdown=mdd,
+        buy_hold=bh, 
+        sma=sma, 
+        short_window=20,
+        long_window=50,
     )
     
     output_path = Path(cfg.get("output_path", "output/report.md"))
